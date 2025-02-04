@@ -1,17 +1,25 @@
 FROM debian:oldstable
 
-RUN apt update -y && apt upgrade -y && apt install -y \
+WORKDIR /var/www/html/
+
+RUN apt update -y \
+	&& apt upgrade -y \
+	&& apt install -y \
+	php7.4 \
 	php-fpm \
-	php-mysqli \
-	curl
+	php7.4-mysql \
+	mariadb-client \
+	wget
 
-RUN mkdir /run/php
+RUN mkdir -p /run/php
 
-COPY www.conf /etc/php/7.4/fpm/pool.d/.
-COPY wp_site.sh .
+RUN chown -R www-data:www-data /var/www/html && \
+	chmod 755 /var/www/html
 
-RUN chmod 777 wp_site.sh
+COPY conf/www.conf /etc/php/7.4/fpm/pool.d/www.conf
 
-CMD ["./wp_site.sh"]
+COPY tools/script.sh /tmp/script.sh
 
+RUN chmod +x /tmp/script.sh
 
+CMD ["/tmp/script.sh"]

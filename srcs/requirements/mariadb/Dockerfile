@@ -1,11 +1,23 @@
 FROM debian:oldstable
 
-RUN apt update -y && apt upgrade -y && apt install -y mariadb-server
+ARG DATABASE_NAME
+ARG DATABASE_ADMIN
+ARG DATABASE_ADMIN_PASS
+ARG DATABASE_USER
+ARG DATABASE_USER_PASS
+ARG DATABASE_ROOT_PASS
 
-COPY 50-server.cnf /etc/mysql/mariadb.conf.d/.
-COPY init.sql /etc/mysql/init.sql
-COPY script.sh .
+RUN apt update -y \
+	&& apt upgrade -y \
+	&& apt install -y mariadb-server
 
-RUN mkdir /run/mysqld && chmod 100 script.sh
+COPY tools/script.sh /tmp/script.sh
+COPY conf/my.cnf /etc/mysql/my.cnf
 
-CMD ["./script.sh"]
+RUN mkdir -p /var/run/mysqld
+RUN chown -R mysql:mysql /var/run/mysqld
+RUN chmod -R 755 /var/run/mysqld
+RUN chmod +x /tmp/script.sh 
+RUN bash /tmp/script.sh
+
+CMD ["mysqld_safe"]

@@ -1,32 +1,77 @@
+name: inception
+
 services:
         nginx:
-                build: requirements/nginx/.
-                container_name: nginx
+                build: requirements/nginx
                 depends_on:
+                        - mariadb
                         - wordpress
-                        - mariadb
-                ports:
-                        - "80:80"
-                volumes:
-                        - ./web:/var/www/html
+                restart: always
+                init: true
+                container_name: nginx
                 networks:
-                        inception:
+                        - inception
+                ports:
+                        - "443:443"
+                volumes:
+                        - website:/var/www/html
+
+        mariadb:
+                build:
+                        context:  requirements/mariadb
+                        args:
+                                - DATABASE_NAME
+                                - DATABASE_ADMIN
+                                - DATABASE_ADMIN_PASS
+                                - DATABASE_USER
+                                - DATABASE_USER_PASS
+                restart: always
+                init: true
+                container_name: mariadb
+                networks:
+                        - inception
+                expose:
+                        - "3306"
+                volumes:
+                        - database:/var/lib/mysql
         wordpress:
-                build: requirements/wordpress/.
-                container_name: wp-php
+                build: requirements/wordpress
+                environment:
+                        - DATABASE_NAME
+                        - DATABASE_ADMIN
+                        - DATABASE_ADMIN_PASS
+                        - URL
+                        - TITLE
+                        - WORDPRESS_ADMIN
+                        - WORDPRESS_ADMIN_PASS
+                        - WORDPRESS_ADMIN_EMAIL
+                restart: always
+                init: true
                 depends_on:
                         - mariadb
-                volumes:
-                        - ./web:/var/www/html
+                container_name: wordpress
                 networks:
-                        inception:
-        mariadb:
-                build: requirements/mariadb/.
-                container_name: mariadb
+                        - inception
+                expose:
+                        - "9000"
                 volumes:
-                        - ./database:/var/lib/mysql
-                networks:
-                        inception:
+                        - website:/var/www/html
+
+volumes:
+        database:
+                name: database
+                driver: local
+                driver_opts:
+                        type: none
+                        o: bind
+                        device: ${VOLUMES_PATH}/database
+        website:
+                name: website
+                driver: local
+                driver_opts:
+                        type: none
+                        o: bind
+                        device: ${VOLUMES_PATH}/website
 
 networks:
-        inception:        
+        inception:
