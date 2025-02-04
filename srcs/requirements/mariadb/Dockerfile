@@ -7,9 +7,9 @@ ARG DATABASE_USER
 ARG DATABASE_USER_PASS
 ARG DATABASE_ROOT_PASS
 
-RUN apt update -y \
-	&& apt upgrade -y \
-	&& apt install -y mariadb-server
+RUN apt-get update -y \
+	&& apt-get upgrade -y \
+	&& apt-get install -y mariadb-server
 
 COPY tools/script.sh /tmp/script.sh
 COPY conf/my.cnf /etc/mysql/my.cnf
