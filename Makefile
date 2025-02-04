@@ -1,6 +1,6 @@
 LOGIN = myokogaw
 
-DOCKER_COMPOSE = docker compose -f srcs/docker-compose.yml
+DOCKER_COMPOSE = docker-compose -f srcs/docker-compose.yml
 
 config:
 	@sudo mkdir -p "/home/${LOGIN}/data/website"
