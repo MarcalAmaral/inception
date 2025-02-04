@@ -3,12 +3,12 @@ name: inception
 services:
         nginx:
                 build: requirements/nginx
+                container_name: nginx
                 depends_on:
                         - mariadb
                         - wordpress
                 restart: always
                 init: true
-                container_name: nginx
                 networks:
                         - inception
                 ports:
@@ -25,9 +25,9 @@ services:
                                 - DATABASE_ADMIN_PASS
                                 - DATABASE_USER
                                 - DATABASE_USER_PASS
+                container_name: mariadb
                 restart: always
                 init: true
-                container_name: mariadb
                 networks:
                         - inception
                 expose:
@@ -36,6 +36,17 @@ services:
                         - database:/var/lib/mysql
         wordpress:
                 build: requirements/wordpress
+                container_name: wordpress
+                restart: always
+                init: true
+                networks:
+                        - inception
+                depends_on:
+                        - mariadb
+                expose:
+                        - "9000"
+                volumes:
+                        - website:/var/www/html
                 environment:
                         - DATABASE_NAME
                         - DATABASE_ADMIN
@@ -45,17 +56,7 @@ services:
                         - WORDPRESS_ADMIN
                         - WORDPRESS_ADMIN_PASS
                         - WORDPRESS_ADMIN_EMAIL
-                restart: always
-                init: true
-                depends_on:
-                        - mariadb
-                container_name: wordpress
-                networks:
-                        - inception
-                expose:
-                        - "9000"
-                volumes:
-                        - website:/var/www/html
+                        - WORDPRESS_USER_PASS
 
 volumes:
         database:

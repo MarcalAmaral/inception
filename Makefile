@@ -1,29 +1,47 @@
 LOGIN = myokogaw
 
-PATH_DOCKER_COMPOSE = srcs/docker-compose.yml
+DOCKER_COMPOSE = docker compose -f srcs/docker-compose.yml
 
-create_dirs:
+config:
 	@sudo mkdir -p "/home/${LOGIN}/data/website"
 	@sudo mkdir -p "/home/${LOGIN}/data/database"
 
-append_hostname:
 	@if ! sudo grep -q "${LOGIN}.42.fr" /etc/hosts; then \
-		echo "127.0.0.1 ${LOGIN}.42.fr" | sudo tee -a /etc/hosts > /dev/null; \
+		echo "127.0.0.1	${LOGIN}.42.fr" | sudo tee -a /etc/hosts > /dev/null; \
 	fi
 
+	@if [ ! -f ./srcs/.env ]; then \
+		wget -O ./srcs/.env https://raw.githubusercontent.com/MarcalAmaral/inception/main/srcs/.env; \
+	fi
 
-all: create_dirs append_hostname up
+all: config up
 
-up:
-	docker compose -f ${PATH_DOCKER_COMPOSE} up --build -d
+down:
+	${DOCKER_COMPOSE} down
+
+ps:
+	${DOCKER_COMPOSE} ps
+
+up: build
+	${DOCKER_COMPOSE} up -d
+
+build:
+	${DOCKER_COMPOSE} build
 
 volumes:
-	docker compose -f ${PATH_DOCKER_COMPOSE} volumes
+	docker volume ls
 
 clean:
+	${DOCKER_COMPOSE} down --rmi all --volumes
+
+fclean: clean
 	sudo sed -i "/myokogaw/d" /etc/hosts
 	sudo rm -rf "/home/${LOGIN}"
-	docker compose -f ${PATH_DOCKER_COMPOSE} down
-	docker system prune -a
+	#rm srcs/.env
+	docker system prune --force --all --volumes
+
+re: fclean all
+
+.PHONY: config all down ps up build volumes clean fclean re
 
 .DEFAULT_GOAL = all

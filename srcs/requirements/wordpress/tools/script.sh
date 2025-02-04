@@ -28,8 +28,9 @@ wp core install \
     --admin_password=${WORDPRESS_ADMIN_PASS} \
     --admin_email=${WORDPRESS_ADMIN_EMAIL} || echo "wp core install failed!"
 
-wp --allow-root theme activate twentytwentythree || echo "Theme activation failed!"
+wp --allow-root theme activate twentytwentyfour || echo "Theme activation failed!"
 
+wp --allow-root user create amaral amaral@email.com --role=editor --user_pass=$WORDPRESS_USER_PASS
 unset DATABASE_NAME DATABASE_ADMIN DATABASE_ADMIN_PASS URL TITLE WORDPRESS_ADMIN WORDPRESS_ADMIN_PASS WORDPRESS_ADMIN_EMAIL
 
 exec php-fpm7.4 -F
