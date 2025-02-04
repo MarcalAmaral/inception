@@ -11,7 +11,7 @@ config:
 	fi
 
 	@if [ ! -f ./srcs/.env ]; then \
-		wget -O ./srcs/.env https://raw.githubusercontent.com/MarcalAmaral/inception/main/srcs/.env; \
+		wget -O ./srcs/.env https://raw.githubusercontent.com/MarcalAmaral/inception/refs/heads/master/srcs/.env; \
 	fi
 
 all: config up
