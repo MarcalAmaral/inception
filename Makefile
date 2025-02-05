@@ -37,7 +37,7 @@ clean:
 fclean: clean
 	sudo sed -i "/myokogaw/d" /etc/hosts
 	sudo rm -rf "/home/${LOGIN}"
-	#rm srcs/.env
+	rm srcs/.env
 	docker system prune --force --all --volumes
 
 re: fclean all

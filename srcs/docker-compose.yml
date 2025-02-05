@@ -21,8 +21,6 @@ services:
                                 - DATABASE_NAME
                                 - DATABASE_ADMIN
                                 - DATABASE_ADMIN_PASS
-                                - DATABASE_USER
-                                - DATABASE_USER_PASS
                 container_name: mariadb
                 restart: on-failure
                 init: true
@@ -51,8 +49,6 @@ services:
                         - DATABASE_ADMIN_PASS
                         - URL
                         - TITLE
-                        - WORDPRESS_ADMIN
-                        - WORDPRESS_ADMIN_PASS
                         - WORDPRESS_ADMIN_EMAIL
                         - WORDPRESS_USER_PASS
 

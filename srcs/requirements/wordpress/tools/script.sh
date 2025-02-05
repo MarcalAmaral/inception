@@ -24,8 +24,8 @@ wp core install \
     --path=/var/www/html \
     --url=${URL} \
     --title=${TITLE} \
-    --admin_user=${WORDPRESS_ADMIN} \
-    --admin_password=${WORDPRESS_ADMIN_PASS} \
+    --admin_user=${DATABASE_ADMIN} \
+    --admin_password=${DATABASE_ADMIN_PASS} \
     --admin_email=${WORDPRESS_ADMIN_EMAIL} || echo "wp core install failed!"
 
 wp --allow-root theme activate twentytwentyfour || echo "Theme activation failed!"
